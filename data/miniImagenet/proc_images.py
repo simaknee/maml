@@ -12,6 +12,7 @@ from __future__ import print_function
 import csv
 import glob
 import os
+import shutil
 
 from PIL import Image
 
@@ -20,12 +21,14 @@ path_to_images = 'images/'
 all_images = glob.glob(path_to_images + '*')
 
 # Resize images
+'''
 for i, image_file in enumerate(all_images):
     im = Image.open(image_file)
     im = im.resize((84, 84), resample=Image.LANCZOS)
     im.save(image_file)
     if i % 500 == 0:
         print(i)
+'''
 
 # Put in correct directory
 for datatype in ['train', 'val', 'test']:
@@ -41,6 +44,9 @@ for datatype in ['train', 'val', 'test']:
             image_name = row[0]
             if label != last_label:
                 cur_dir = datatype + '/' + label + '/'
-                os.system('mkdir ' + cur_dir)
+                if not os.path.isdir(datatype + '/' + label):
+                    os.makedirs(datatype + '/' + label)
+                #os.system('mkdir ' + cur_dir)
                 last_label = label
-            os.system('mv images/' + image_name + ' ' + cur_dir)
+            shutil.move('images/' + image_name, cur_dir)
+            #os.system('mv images/' + image_name + ' ' + cur_dir)
